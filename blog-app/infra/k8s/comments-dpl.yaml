@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comments-dpl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comments #manage all pods with a label app: comments
+  template:
+    metadata:
+      labels:
+        app: comments #add the label app:posts to all pods this dpl creates
+    spec:
+      containers:
+        - name: comments
+          image: 510033969879.dkr.ecr.us-east-2.amazonaws.com/tech/architecture/blog-app/comments
+          imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comments-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: comments # This service will expose all pods with a label of app: comments
+  ports:
+    - name: comments # just for logging purposes, no need to match the pod or service name
+      protocol: TCP
+      port: 5000
+      targetPort: 5000 # port where the pod is listening for traffic

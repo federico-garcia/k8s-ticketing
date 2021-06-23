@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - host: posts.com #during development, add this to your /etc/hosts -> 127.0.0.1 post.com or if you're using minikube, you need to use the minikube ip instead.
+      http:
+        paths:
+          - path: /posts/create # http://posts.com/posts/create
+            pathType: Exact
+            backend:
+              service:
+                name: posts-cluster-ip-srv
+                port: 
+                  number: 3001
+          - path: /posts # http://posts.com/posts
+            pathType: Exact
+            backend:
+              service:
+                name: query-srv
+                port: 
+                  number: 4000
+          - path: /posts/?(.*)/comments # http://posts.com/posts/:id/comments
+            pathType: Prefix
+            backend:
+              service:
+                name: comments-srv
+                port: 
+                  number: 5000
+          - path: /?(.*) # http://posts.com/{anything}
+            pathType: Prefix
+            backend:
+              service:
+                name: client-srv
+                port: 
+                  number: 3000

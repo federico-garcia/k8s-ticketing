@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moderation-dpl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: moderation #manage all pods with a label app: moderation
+  template:
+    metadata:
+      labels:
+        app: moderation #add the label app:posts to all pods this dpl creates
+    spec:
+      containers:
+        - name: moderation
+          image: 510033969879.dkr.ecr.us-east-2.amazonaws.com/tech/architecture/blog-app/moderation
+          imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moderation-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: moderation # This service will expose all pods with a label of app: moderation
+  ports:
+    - name: moderation # just for logging purposes, no need to match the pod or service name
+      protocol: TCP
+      port: 3000
+      targetPort: 3000 # port where the pod is listening for traffic

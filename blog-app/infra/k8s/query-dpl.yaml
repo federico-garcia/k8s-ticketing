@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: query-dpl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: query #manage all pods with a label app: query
+  template:
+    metadata:
+      labels:
+        app: query #add the label app:posts to all pods this dpl creates
+    spec:
+      containers:
+        - name: query
+          image: 510033969879.dkr.ecr.us-east-2.amazonaws.com/tech/architecture/blog-app/query
+          imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: query # This service will expose all pods with a label of app: query
+  ports:
+    - name: query # just for logging purposes, no need to match the pod or service name
+      protocol: TCP
+      port: 4000
+      targetPort: 4000 # port where the pod is listening for traffic

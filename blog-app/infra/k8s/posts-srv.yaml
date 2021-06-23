@@ -1,0 +1,14 @@
+# This is created to test the posts service from outside the cluster using postman or any other REST client
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-srv
+spec:
+  type: NodePort
+  selector:
+    app: posts # This service will expose all pods with a label of app: posts
+  ports:
+    - name: posts # just for logging purposes, no need to match the pod or service name
+      protocol: TCP
+      port: 3001 # the service port that is assigned in the cluster (no available from outside, for that, check the list of service under the column Ports - http://localhost:NodePort)
+      targetPort: 3001 # port where the pod is listening for traffic

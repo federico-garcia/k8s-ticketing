@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-bus-dpl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: event-bus #manage all pods with a label app: event-bus
+  template:
+    metadata:
+      labels:
+        app: event-bus #add the label app:posts to all pods this dpl creates
+    spec:
+      containers:
+        - name: event-bus
+          image: 510033969879.dkr.ecr.us-east-2.amazonaws.com/tech/architecture/blog-app/event-bus
+          imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: event-bus-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: event-bus # This service will expose all pods with a label of app: event-bus
+  ports:
+    - name: event-bus # just for logging purposes, no need to match the pod or service name
+      protocol: TCP
+      port: 3000
+      targetPort: 3000 # port where the pod is listening for traffic

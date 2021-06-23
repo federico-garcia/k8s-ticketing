@@ -1,0 +1,47 @@
+version: "2.4"
+
+services:
+  client:
+    build:
+      context: ./client
+    ports:
+      - "3000:3000"
+    healthcheck:
+      disable: true
+  comments:
+    build:
+      context: ./comments
+    ports:
+      - "5000:5000"
+    healthcheck:
+      disable: true
+  event-bus:
+    build:
+      context: ./event-bus
+    ports:
+      - "3002:3000"
+    healthcheck:
+      disable: true
+  moderation:
+    build:
+      context: ./moderation
+    ports:
+      - "3003:3000"
+    healthcheck:
+      disable: true
+  posts:
+    build:
+      context: ./posts
+    ports:
+      - "3001:3001"
+    healthcheck:
+      disable: true
+  query:
+    build:
+      context: ./query
+    ports:
+      - "4000:4000"
+    depends_on:
+      - event-bus
+    healthcheck:
+      disable: true

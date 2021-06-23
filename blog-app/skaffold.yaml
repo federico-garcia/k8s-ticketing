@@ -1,0 +1,63 @@
+apiVersion: skaffold/v2beta10
+kind: Config
+metadata:
+  name: blog-app
+build:
+  local:
+    push: false
+    useBuildkit: true
+  tagPolicy:
+    sha256: {}
+  artifacts:
+    - image: 510033969879.dkr.ecr.us-east-2.amazonaws.com/tech/architecture/blog-app/posts
+      context: posts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: 510033969879.dkr.ecr.us-east-2.amazonaws.com/tech/architecture/blog-app/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.js"
+            dest: .
+    - image: 510033969879.dkr.ecr.us-east-2.amazonaws.com/tech/architecture/blog-app/comments
+      context: comments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: 510033969879.dkr.ecr.us-east-2.amazonaws.com/tech/architecture/blog-app/event-bus
+      context: event-bus
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: 510033969879.dkr.ecr.us-east-2.amazonaws.com/tech/architecture/blog-app/moderation
+      context: moderation
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: 510033969879.dkr.ecr.us-east-2.amazonaws.com/tech/architecture/blog-app/query
+      context: query
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+deploy:
+  kubectl:
+    manifests:
+      - infra/k8s/*
